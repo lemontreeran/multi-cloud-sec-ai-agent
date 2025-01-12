@@ -34,9 +34,10 @@ engine = create_engine(URL(
     warehouse=st.secrets["SNOWFLAKE_WAREHOUSE"],
     database=st.secrets["SNOWFLAKE_DATABASE"],
     schema=st.secrets["SNOWFLAKE_SCHEMA"],
-    user=st.secrets["SNOWFLAKE_USER"],),
+    user=st.secrets["SNOWFLAKE_USER"],
     password=st.secrets["SNOWFLAKE_USER_PASSWORD"],
-    )
+    ),
+)
 
 snowflake_connection = snowflake.connector.connect(**connection_details)
 tru = TruSession(database_engine = engine)
