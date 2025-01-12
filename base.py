@@ -22,7 +22,7 @@ import snowflake.connector
 connection_details = {
   "account":  st.secrets["SNOWFLAKE_ACCOUNT"],
   "user": st.secrets["SNOWFLAKE_USER"],
-  "private_key": pkb,
+  "password": st.secrets["SNOWFLAKE_USER_PASSWORD"],
   "role": st.secrets["SNOWFLAKE_ROLE"],
   "database": st.secrets["SNOWFLAKE_DATABASE"],
   "schema": st.secrets["SNOWFLAKE_SCHEMA"],
@@ -35,9 +35,7 @@ engine = create_engine(URL(
     database=st.secrets["SNOWFLAKE_DATABASE"],
     schema=st.secrets["SNOWFLAKE_SCHEMA"],
     user=st.secrets["SNOWFLAKE_USER"],),
-    connect_args={
-            'private_key': pkb,
-            },
+    password=st.secrets["SNOWFLAKE_USER_PASSWORD"],
     )
 
 snowflake_connection = snowflake.connector.connect(**connection_details)
