@@ -1,56 +1,104 @@
 import streamlit as st
-from openai import OpenAI
+import trulens.dashboard.streamlit as trulens_st
+from trulens.core import TruSession
+from base import rag, filtered_rag, tru_rag, filtered_tru_rag, engine
 
-# Show title and description.
-st.title("💬 Chatbot")
-st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-    "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
-)
+MODELS = [
+    "mistral-large2",
+    "snowflake-arctic",
+    "llama3-70b",
+    "llama3-8b",
+]
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
-
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
-
-    # Create a session state variable to store the chat messages. This ensures that the
-    # messages persist across reruns.
-    if "messages" not in st.session_state:
+def init_messages():
+    """
+    Initialize chat history.
+    """
+    if st.session_state.clear_conversation or "messages" not in st.session_state:
         st.session_state.messages = []
+    
+    if not st.session_state.messages:
+        st.session_state.messages.append({"role": "assistant", "content": "Ask me anything about Cloud Security Alerts!"})
 
-    # Display the existing chat messages via `st.chat_message`.
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Create a chat input field to allow the user to enter a message. This will display
-    # automatically at the bottom of the page.
-    if prompt := st.chat_input("What is up?"):
+def init_config_options():
+    """
+    Initialize the configuration options in the Streamlit sidebar. Allow the user to select
+    a cortex search service, clear the conversation, toggle debug mode, and toggle the use of
+    chat history. Also provide advanced options to select a model, the number of context chunks,
+    and the number of chat messages to use in the chat history.
+    """
+    st.sidebar.selectbox(
+        "Select cortex search service:",
+        [s["name"] for s in st.session_state.service_metadata],
+        key="selected_cortex_search_service",
+    )
 
-        # Store and display the current prompt.
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+    st.sidebar.button("Clear conversation", key="clear_conversation")
+    st.sidebar.toggle("Debug", key="debug", value=False)
+    st.sidebar.toggle("Use chat history", key="use_chat_history", value=True)
 
-        # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
+    with st.sidebar.expander("Advanced options"):
+        st.selectbox("Select model:", MODELS, key="model_name")
+        st.number_input(
+            "Select number of context chunks",
+            value=5,
+            key="num_retrieved_chunks",
+            min_value=1,
+            max_value=10,
+        )
+        st.number_input(
+            "Select number of messages to use in chat history",
+            value=5,
+            key="num_chat_messages",
+            min_value=1,
+            max_value=10,
         )
 
-        # Stream the response to the chat using `st.write_stream`, then store it in 
-        # session state.
-        with st.chat_message("assistant"):
-            response = st.write_stream(stream)
+    st.sidebar.expander("Session State").write(st.session_state)
+
+def main():
+    init_config_options()
+    init_messages()
+
+    tru = TruSession(database_engine=engine)
+
+    with_filters = st.toggle("Use [Context Filter Guardrails](%s)" % "https://www.trulens.org/trulens_eval/guardrails/", value=False)
+
+    if prompt := st.chat_input("Enter text:"):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        record, response = generate_response(prompt, with_filters)
         st.session_state.messages.append({"role": "assistant", "content": response})
+
+        with st.chat_message("assistant"):
+            st.markdown(response)
+
+        with st.expander("See the trace of this record 👀"):
+            trulens_st.trulens_trace(record=record)
+        trulens_st.trulens_feedback(record=record)
+
+    with st.expander("Open to see aggregate evaluation metrics"):
+        st.title("Aggregate Evaluation Metrics")
+        st.write("Powered by TruLens 🦑.")
+        trulens_st.trulens_leaderboard()
+
+def generate_response(input_text, with_filters):
+    if with_filters:
+        app = filtered_tru_rag
+        with filtered_tru_rag as recording:
+            response = filtered_rag.query(input_text)
+    else:
+        app = tru_rag
+        with tru_rag as recording:
+            response = rag.query(input_text)
+
+    record = recording.get()
+    
+    return record, response
+
+if __name__ == "__main__":
+    main()

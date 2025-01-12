@@ -1,2 +1,9 @@
 streamlit
-openai
+trulens-core>=1.0.4
+trulens-feedback>=1.0.4
+trulens-providers-cortex>=1.0.4
+trulens-dashboard @ git+https://github.com/truera/trulens#egg=trulens-dashboard&subdirectory=src/dashboard/
+snowflake-sqlalchemy
+snowflake-snowpark-python
+snowflake-ml-python
+snowflake.core
