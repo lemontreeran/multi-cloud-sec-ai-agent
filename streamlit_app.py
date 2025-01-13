@@ -92,7 +92,7 @@ def main():
         with st.expander("Open to see aggregate evaluation metrics"):
             st.title("Aggregate Evaluation Metrics")
             st.write("Powered by TruLens 🦑.")
-            tru.trulens_leaderboard()
+            tru.get_leaderboard()
 
 if __name__ == "__main__":
     main()
