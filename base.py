@@ -59,12 +59,12 @@ class CortexSearchRetriever:
     )
         resp = cortex_search_service.search(
                 query=query,
-                columns=["doc_text"],
+                columns=["DESCRIPTION"],
                 limit=self._limit_to_retrieve,
             )
 
         if resp.results:
-            return [curr["doc_text"] for curr in resp.results]
+            return [curr["DESCRIPTION"] for curr in resp.results]
         else:
             return []
         
