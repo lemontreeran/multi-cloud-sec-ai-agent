@@ -69,7 +69,7 @@ class CortexSearchRetriever:
             return []
         
 model_name = st.session_state.get("model_name", "mistral-large2")
-provider = Cortex(snowflake_connection, model_engine=model_name)
+provider = Cortex(session, model_engine=model_name)
 
 f_groundedness = (
     Feedback(
@@ -127,7 +127,7 @@ class RAG:
     {query}
     Answer: '
     """
-    return Complete("mistral-large", prompt)
+    return Complete("mistral-large2", prompt)
 
   @instrument
   def query(self, query: str) -> str:
