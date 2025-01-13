@@ -127,7 +127,11 @@ class RAG:
     {query}
     Answer: '
     """
+    """
     return Complete("mistral-large2", prompt)
+    """
+    df_response = session.sql("select snowflake.cortex.complete(?, ?) as response", params=[st.session_state.model_name, prompt]).collect()
+    return df_response[0].RESPONSE
 
   @instrument
   def query(self, query: str) -> str:
