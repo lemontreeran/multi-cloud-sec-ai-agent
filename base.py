@@ -45,12 +45,12 @@ session = Session.builder.configs(connection_details).create()
 
 class CortexSearchRetriever:
 
-    def __init__(self, session: Session, limit_to_retrieve: int = 4):
-        self._session = session
+    def __init__(self, snowpark_session: Session, limit_to_retrieve: int = 4):
+        self._snowpark_session = snowpark_session
         self._limit_to_retrieve = limit_to_retrieve
 
     def retrieve(self, query: str) -> List[str]:
-        root = Root(self._session)
+        root = Root(self._snowpark_session)
         cortex_search_service = (
         root
         .databases[st.secrets["SNOWFLAKE_DATABASE"]]
@@ -104,7 +104,7 @@ feedbacks = [f_context_relevance,
 class RAG:
 
   def __init__(self):
-    self.retriever = CortexSearchRetriever(session=session, limit_to_retrieve=4)
+    self.retriever = CortexSearchRetriever(snowpark_session=session, limit_to_retrieve=4)
 
   @instrument
   def retrieve_context(self, query: str) -> list:
