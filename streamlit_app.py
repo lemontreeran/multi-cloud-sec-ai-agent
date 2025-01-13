@@ -88,7 +88,7 @@ def main():
 
         with st.expander("See the trace of this record 👀"):
             trulens_st.trulens_trace(record=record)
-    trulens_st.trulens_trace(record=record)
+        trulens_st.trulens_feedback(record=record)
 
     with st.expander("Open to see aggregate evaluation metrics"):
         st.title("Aggregate Evaluation Metrics")
