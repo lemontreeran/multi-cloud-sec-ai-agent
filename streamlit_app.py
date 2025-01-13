@@ -94,6 +94,7 @@ def main():
         st.title("Aggregate Evaluation Metrics")
         st.write("Powered by TruLens 🦑.")
         trulens_st.trulens_leaderboard()
+    trulens_st.trulens_leaderboard()
 
 if __name__ == "__main__":
     main()
