@@ -88,11 +88,15 @@ def main():
 
         with st.expander("See the trace of this record 👀"):
             trulens_st.trulens_trace(record=record)
+    trulens_st.trulens_trace(record=record)
 
-        with st.expander("Open to see aggregate evaluation metrics"):
-            st.title("Aggregate Evaluation Metrics")
-            st.write("Powered by TruLens 🦑.")
-            tru.get_leaderboard()
+    with st.expander("Open to see aggregate evaluation metrics"):
+        st.title("Aggregate Evaluation Metrics")
+        st.write("Powered by TruLens 🦑.")
+        """
+        tru.get_leaderboard()
+        """
+        trulens_st.trulens_leaderboard()
 
 if __name__ == "__main__":
     main()
