@@ -68,7 +68,8 @@ class CortexSearchRetriever:
         else:
             return []
         
-provider = Cortex(snowflake_connection, model_engine="llama3.1-8b")
+model_name = st.session_state.get("model_name", "mistral-large2")
+provider = Cortex(snowflake_connection, model_engine=model_name)
 
 f_groundedness = (
     Feedback(

@@ -60,6 +60,20 @@ def init_config_options():
 
     st.sidebar.expander("Session State").write(st.session_state)
 
+def generate_response(input_text, with_filters):
+    if with_filters:
+        app = filtered_tru_rag
+        with filtered_tru_rag as recording:
+            response = filtered_rag.query(input_text)
+    else:
+        app = tru_rag
+        with tru_rag as recording:
+            response = rag.query(input_text)
+
+    record = recording.get()
+    
+    return record, response
+
 def main():
     init_config_options()
     init_messages()
@@ -85,20 +99,6 @@ def main():
         st.title("Aggregate Evaluation Metrics")
         st.write("Powered by TruLens 🦑.")
         trulens_st.trulens_leaderboard()
-
-def generate_response(input_text, with_filters):
-    if with_filters:
-        app = filtered_tru_rag
-        with filtered_tru_rag as recording:
-            response = filtered_rag.query(input_text)
-    else:
-        app = tru_rag
-        with tru_rag as recording:
-            response = rag.query(input_text)
-
-    record = recording.get()
-    
-    return record, response
 
 if __name__ == "__main__":
     main()
