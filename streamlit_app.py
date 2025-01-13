@@ -52,6 +52,10 @@ def init_config_options():
     chat history. Also provide advanced options to select a model, the number of context chunks,
     and the number of chat messages to use in the chat history.
     """
+    if "service_metadata" not in st.session_state:
+        st.warning("Service metadata is not initialized. Initializing now...")
+        init_service_metadata()
+    
     st.sidebar.selectbox(
         "Select cortex search service:",
         [s["name"] for s in st.session_state.service_metadata],
