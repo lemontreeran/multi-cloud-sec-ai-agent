@@ -24,6 +24,27 @@ def init_messages():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
+def init_service_metadata():
+    """
+    Initialize the session state for cortex search service metadata. Query the available
+    cortex search services from the Snowflake session and store their names and search
+    columns in the session state.
+    """
+    if "service_metadata" not in st.session_state:
+        services = session.sql("SHOW CORTEX SEARCH SERVICES;").collect()
+        service_metadata = []
+        if services:
+            for s in services:
+                svc_name = s["name"]
+                svc_search_col = session.sql(
+                    f"DESC CORTEX SEARCH SERVICE {svc_name};"
+                ).collect()[0]["search_column"]
+                service_metadata.append(
+                    {"name": svc_name, "search_column": svc_search_col}
+                )
+
+        st.session_state.service_metadata = service_metadata
+
 def init_config_options():
     """
     Initialize the configuration options in the Streamlit sidebar. Allow the user to select
@@ -75,6 +96,7 @@ def generate_response(input_text, with_filters):
     return record, response
 
 def main():
+    init_service_metadata()
     init_config_options()
     init_messages()
 
