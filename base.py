@@ -40,7 +40,9 @@ engine = create_engine(URL(
 )
 
 snowflake_connection = snowflake.connector.connect(**connection_details)
+"""
 tru = TruSession(database_engine = engine)
+"""
 session = Session.builder.configs(connection_details).create()
 
 class CortexSearchRetriever:
