@@ -31,12 +31,12 @@ def init_service_metadata():
     columns in the session state.
     """
     if "service_metadata" not in st.session_state:
-        services = st.session.sql("SHOW CORTEX SEARCH SERVICES;").collect()
+        services = session.sql("SHOW CORTEX SEARCH SERVICES;").collect()
         service_metadata = []
         if services:
             for s in services:
                 svc_name = s["name"]
-                svc_search_col = st.session.sql(
+                svc_search_col = session.sql(
                     f"DESC CORTEX SEARCH SERVICE {svc_name};"
                 ).collect()[0]["search_column"]
                 service_metadata.append(
