@@ -102,7 +102,7 @@ def main():
 
             trulens_st.trulens_leaderboard()
             
-            run_dashboard(tru)
+            run_dashboard(session=tru)
             """
             tru.get_leaderboard()
             dashboard.run_dashboard(port=59244)
