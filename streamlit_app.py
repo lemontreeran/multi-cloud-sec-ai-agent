@@ -3,6 +3,7 @@ import trulens.dashboard.streamlit as trulens_st
 import trulens.dashboard as dashboard
 from trulens.dashboard import run_dashboard
 from trulens.core import TruSession
+from trulens.dashboard.Leaderboard import render_leaderboard
 from base import rag, filtered_rag, tru_rag, filtered_tru_rag, engine
 
 MODELS = [
@@ -98,12 +99,15 @@ def main():
         st.write("Powered by TruLens 🦑.")
         """
         tru.get_leaderboard()
+
         trulens_st.trulens_leaderboard()
-        run_dashboard(tru)
-        """
         
+        run_dashboard(tru)
+
         tru.get_leaderboard()
         dashboard.run_dashboard(port=59244)
+        """
+        render_leaderboard()
 
 if __name__ == "__main__":
     main()
