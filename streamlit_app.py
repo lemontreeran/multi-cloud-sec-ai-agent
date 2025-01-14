@@ -76,7 +76,7 @@ def main():
     init_config_options()
     init_messages()
 
-    tru = TruSession(database_engine=engine)
+    tru = TruSession()
     tru.reset_database()
  
     with_filters = st.toggle("Use [Context Filter Guardrails](%s)" % "https://www.trulens.org/trulens_eval/guardrails/", value=False)
