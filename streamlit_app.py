@@ -94,20 +94,18 @@ def main():
             trulens_st.trulens_trace(record=record)
         trulens_st.trulens_feedback(record=record)
 
-    with st.expander("Open to see aggregate evaluation metrics"):
-        st.title("Aggregate Evaluation Metrics")
-        st.write("Powered by TruLens 🦑.")
-        """
-        tru.get_leaderboard()
+        with st.expander("Open to see aggregate evaluation metrics"):
+            st.title("Aggregate Evaluation Metrics")
+            st.write("Powered by TruLens 🦑.")
+            """
+            tru.get_leaderboard()
 
-        trulens_st.trulens_leaderboard()
-        
-        run_dashboard(tru)
-
-        tru.get_leaderboard()
-        dashboard.run_dashboard(port=59244)
-        """
-        render_leaderboard()
+            trulens_st.trulens_leaderboard()
+            
+            run_dashboard(tru)
+            """
+            tru.get_leaderboard()
+            dashboard.run_dashboard(port=59244)
 
 if __name__ == "__main__":
     main()
