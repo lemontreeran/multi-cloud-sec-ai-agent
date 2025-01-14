@@ -71,11 +71,13 @@ def generate_response(input_text, with_filters):
     return record, response
 
 def main():
+    TruSession().migrate_database()
+
     init_config_options()
     init_messages()
 
     tru = TruSession(database_engine=engine)
-
+ 
     with_filters = st.toggle("Use [Context Filter Guardrails](%s)" % "https://www.trulens.org/trulens_eval/guardrails/", value=False)
 
     if prompt := st.chat_input("Enter text:"):
