@@ -19,6 +19,10 @@ from sqlalchemy import create_engine
 from snowflake.sqlalchemy import URL
 import snowflake.connector
 
+import json
+import logging
+logger = logging.getLogger(__name__)
+
 connection_details = {
   "account":  st.secrets["SNOWFLAKE_ACCOUNT"],
   "user": st.secrets["SNOWFLAKE_USER"],
@@ -121,19 +125,37 @@ class RAG:
     Generate answer from context.
     """
     prompt = f"""
-    'You are an expert assistance extracting information from context provided.
-    Answer the question based on the context. Be concise and do not hallucinate.
+    [INST]
+    You are an expert chat assistance that extracs information from the CONTEXT provided
+    between <context> and </context> tags.
+    When ansering the question contained between <question> and </question> tags
+    be concise and do not hallucinate. 
     If you don´t have the information just say so.
-    Context: {context_str}
-    Question:
+    Only anwer the question if you can extract it from the CONTEXT provideed.
+           
+    Do not mention the CONTEXT used in your answer.
+
+    <context>          
+    {context_str}
+    </context>
+    <question>  
     {query}
-    Answer: '
+    </question>
+    [/INST]
+    Answer:
     """
-    """
-    return Complete("mistral-large2", prompt)
+ 
+
+    df_response = None
+    print(f"************************************")
+
+    prompt = prompt.format(context_str=context_str, query=query)
+    print(f"{prompt}")
+    print(f"====================================")
+    return Complete(st.session_state.model_name, prompt)
     """
     df_response = session.sql("select snowflake.cortex.complete(?, ?) as response", params=[st.session_state.model_name, prompt]).collect()
-    return df_response[0].RESPONSE
+    """
 
   @instrument
   def query(self, query: str) -> str:

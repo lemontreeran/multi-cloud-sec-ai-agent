@@ -99,10 +99,7 @@ def main():
             st.write("Powered by TruLens 🦑.")
             """
             tru.get_leaderboard()
-
-            trulens_st.trulens_leaderboard()
-            
-            run_dashboard(session=tru)
+            dashboard.run_dashboard(port=59244)
             """
             tru.get_leaderboard()
             dashboard.run_dashboard(port=59244)
