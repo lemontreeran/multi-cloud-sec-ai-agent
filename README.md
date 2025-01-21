@@ -1,8 +1,8 @@
-# 💬 Chatbot template
+# 💬 SecuRAG
 
-A simple Streamlit app that shows how to build a chatbot using OpenAI's GPT-3.5.
+Streamlined multi-cloud security insights powered by Cortex Search, Mistral LLM, and Streamlit
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://chatbot-template.streamlit.app/)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://multi-cloud-sec-ai-agent.streamlit.app/)
 
 ### How to run it on your own machine
 
